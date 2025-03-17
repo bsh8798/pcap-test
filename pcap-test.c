@@ -88,26 +88,26 @@ int main(int argc, char* argv[]) {
 		return -1;
 	}
 
-    struct ethernet_hdr *ether_hdr;
-    struct ip_hdr *ip_hdr;
-    struct tcp_hdr *tcp_hdr;
-    struct payload *payload;
+	struct ethernet_hdr *ether_hdr;
+	struct ip_hdr *ip_hdr;
+	struct tcp_hdr *tcp_hdr;
+	struct payload *payload;
 
 	while (true) {
-	        struct pcap_pkthdr* header;
-			const u_char* packet;
-			int res = pcap_next_ex(pcap, &header, &packet);
-			if (res == 0) continue;
-			if (res == PCAP_ERROR || res == PCAP_ERROR_BREAK) {
-				printf("pcap_next_ex return %d(%s)\n", res, pcap_geterr(pcap));
-				break;
-			}
+		struct pcap_pkthdr* header;
+		const u_char* packet;
+		int res = pcap_next_ex(pcap, &header, &packet);
+		if (res == 0) continue;
+		if (res == PCAP_ERROR || res == PCAP_ERROR_BREAK) {
+			printf("pcap_next_ex return %d(%s)\n", res, pcap_geterr(pcap));
+			break;
+		}
 	        //printf("%u bytes captured\n", header->caplen);
 	
-	        ether_hdr = (struct ethernet_hdr*)packet;
-	        ip_hdr = (struct ip_hdr*)(packet + sizeof(struct ethernet_hdr));
-	        tcp_hdr = (struct tcp_hdr*)(packet + sizeof(struct ethernet_hdr) + ip_hdr->IHL*4);
-	        payload = (struct payload*)(packet + sizeof(struct ethernet_hdr) + ip_hdr->IHL*4 + tcp_hdr->header_length*4);
+		ether_hdr = (struct ethernet_hdr*)packet;
+		ip_hdr = (struct ip_hdr*)(packet + sizeof(struct ethernet_hdr));
+		tcp_hdr = (struct tcp_hdr*)(packet + sizeof(struct ethernet_hdr) + ip_hdr->IHL*4);
+		payload = (struct payload*)(packet + sizeof(struct ethernet_hdr) + ip_hdr->IHL*4 + tcp_hdr->header_length*4);
 	        uint payload_length = header->caplen - (sizeof(struct ethernet_hdr) + ip_hdr->IHL*4 + tcp_hdr->header_length*4);
 	
 	        if(ip_hdr->protocol == 0x06) {
